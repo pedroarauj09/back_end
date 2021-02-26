@@ -1,0 +1,11 @@
+tools:
+
+- Node 
+- typescript
+- yarn
+- express
+- Insonmnia
+- TypeOrm
+- SQLITE3
+
+

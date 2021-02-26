@@ -1,0 +1,228 @@
+INIALIZE YARN:
+- yarn init -y
+
+----------------------------------
+
+DEPENDENCIES:
+
+- Exprees : FrameWork to deal with node, used to create routes, server.  
+  *Install: yarn add express
+  |-> To import the types of express Install : yarn add @types/express -D(install only for 'D'evelopment)
+   
+
+--------------------------------------------
+
+
+RUN SERVER:
+
+// Run the server
+app.listen(3333);
+
+|-> NODE CANNOT IMPORT EXPRESS
+  
+  SOLUTION:
+    - Install typescript: yarn add typescript - D
+    - Initialize typescript on application: yarn tsc --init
+    - Convert code to typescript auto: yarn add ts-node-dev -D
+
+    * Now to run the server; go to package.json , create a "script" { "command" : "ts-node-dev" /src-of-server}
+
+---------------------------------------------
+
+METHODS:
+
+    - POST : save
+    - GET : search
+    - PUT : change
+    - DELETE: delete
+    - PATCH: especific change
+
+|-> EXAMPLES:
+
+/* 1º parameter: route (http://localhost:port/)
+   2º parameter: request,response
+*/  
+
+app.get(  "/" , (request,response) => {
+    /* (OPTION) return response.send("hey") */
+    return response.json({message: "hello"})
+}  )
+
+app.post(  "/" , (request,response) => {
+    // Data was received to save 
+    return response.json({message: "Data was sucessfully saved"})
+}  )
+
+* PROBLEM: THE BROWSER ONLY RECOGNISE METHOD 'GET' 
+
+    -> SOLUTION: 
+    -  Use Insonmnia
+
+ ------------------------------------------------------
+
+ DATABASE
+
+* HOW WORK WITH?
+    Use *TypeORM*: - Map classes into tables on dataBase
+                 - If change the driver(database), only have to modificate the camp of driver, and the rest 
+                 typeOrm deal with and readapt.
+
+    Installation: - yarn add typeorm reflect-metadata             
+
+
+* SQLITE3
+  - Installation: yarn add sqlite3
+
+
+*CONFIG SQLITE3
+  - create a file json or js or typescript
+  - if json, put in :
+        {"type" : "sqlite",
+        "database" : "route where is database/database.sqlite"}
+      This will create the file database.sqlite
+
+  - Create in the folder database, a file index.ts 
+  - in this file, import createConnection from typeorm
+  - go to file of server,  import 'reflect-metadata' and import 'route where is config the connection'
+
+
+---------------------------------------------------
+
+MIGRATION: Its a historic of what happens on database, each table are created in some migration
+
+*CREATE COMMAND TO RUN MIGRATION:
+- go to package.json, put inside "srcripts" { "typeorm" : "ts-node-dev node_modules/typeorm/cli.js "}
+    That will include CLI(command line interface) from typeorm, into o command called "typeorm"
+
+- To change the location where will be created migration:
+  -> go to ormconfig.json, include: "cli":{"migrationsDir": "route of where will be allocated"}
+
+*CREATE MIGRATION:
+ - yarn typeorm migration:create -n "NameOfMigration"
+
+*CREATE TABLE IN MIGRATION
+ 
+ - go to migration file, put in public async up, await queryRunner.createTable( new Table({content}));
+
+*REMOVE TABLE IN MIGRATION
+
+ - go to migration file, put in public async down, await queryRunner.dropTable("tableName");
+
+ *RUN ALL MIGRATION
+
+ - yarn typeorm migration:run
+
+ *REMOVE LAST MIGRATION
+
+ - yarn typeorm migration:revert
+
+ *VISUALIZE DATABASE
+  
+ - vscode extension or beekeeper 
+
+ ------------------------------------------------------
+  
+  MODELS
+
+ ------------------------------------------------------
+
+ CONTROLLER
+  -> Control each method
+
+
+  ----------------------------------------------------
+
+  CREATE ID
+  -> use tool : yarn add uuid
+  -> add types of id : yarn add @types/uuid -D
+
+  ----------------------------------------------------
+
+  CREATE REPOSITORY
+    -> Repositorys have function to do actions and manipipulate data from dataBase
+    -> For each entity will be some repository
+    
+    *CREATE
+    -> create some entity on models
+    -> go to controller and with import of orm, do a getRepository(name of class of entity exported)
+    
+  ----------------------------------------------------
+  
+  Automated Tests
+
+  1 - Unitary Tests: 
+    -> TDD: Tests not deal with database , repository etc. Tests only to discover services and repository based on fakedata
+
+  2 - Integration Tests:
+   -> Test all application:
+     request => routes => controller => repository
+     repository <= controller <= response
+
+  3 - End to End(E2E)
+   -> Simulate all action from user, from frontend to backend and vice-versa
+
+
+   *TOOLS FOR TESTS
+   -> Jest:  yarn add jest @types/jest -D
+   -> Config jest: yarn jest --init
+   
+   -> preset: yarn add ts-jest -D
+       - go to jes.config.ts and search for preset and put : "ts-jest"
+
+   -> SuperTest:  yarn add supertest @types/supertest -D
+      - Tool fo Requests
+
+   
+   *Uncomment bail, and attibute him as true.
+    -> Bail prevents if occur some error he dont permit to advance to another test
+
+   
+   *Example of test:
+   
+   it("deve ser possivel somar 2 numeros", () =>{ 
+        expect(2+2).toBe(4); // What is expected
+    });
+
+
+   *USE ANOTHER DATABASE ONLY FOR Tests
+  -> Use ambient var to identify Test action( go to ./package.json "scripts":{"test": "NODE_ENV=test jest"})
+  -> go to database/index.ts and create connection with database depending whether ambient var is = test or not
+
+
+   *RUN TEST: yarn test
+
+   *REMOVE TEST : rm ./../../database.test.sqlite
+
+   * RUN TESTS ONE AFTER OTHER
+   -> go to package.json , on "test": "NODE_ENV=test jest" , insert "-i"
+
+  ----------------------------------------------------
+ 
+  SEND EMAIL
+
+  Use NodeMailer:  yarn add nodemailer  
+  Config type: yarn add @types/nodemailer -D
+  To know how to use: ethereal.mail
+
+  ----------------------------------------------------
+
+  TEMPLATE ENGINE
+
+  Use Handlebars: yarn add handlebars
+
+  ----------------------------------------------------
+
+  GET PARAMS/RESPONSE FROM USER 
+
+  example of http: http://localhost:3333/answers/3?u=22428d59-8992-4908-a467-6c4535037a2e
+  
+  Route params: params that compose route like:  routes.get("/answers/:value")
+
+  Query params: params that not is obrigatory, like u = 22428...
+
+  ----------------------------------------------------
+
+  VALIDATION
+
+  Use yup: yarn add yup
+
